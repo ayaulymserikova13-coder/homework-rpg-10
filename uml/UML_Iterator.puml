@@ -1,0 +1,85 @@
+@startuml
+title Iterator Pattern - Homework 10
+
+interface QuestIterator {
+    +hasNext(): boolean
+    +next(): Quest
+}
+
+class QuestLog {
+    -quests: List<Quest>
+    +add(quest: Quest): void
+    +size(): int
+    +ordered(): QuestIterator
+    +reverse(): QuestIterator
+    +priorityAtLeast(threshold: QuestPriority): QuestIterator
+    +rewardSorted(): QuestIterator
+    ~snapshot(): List<Quest>
+}
+
+class Quest {
+    -title: String
+    -priority: QuestPriority
+    -rewardGold: int
+    -urgent: boolean
+    +getTitle(): String
+    +getPriority(): QuestPriority
+    +getRewardGold(): int
+    +isUrgent(): boolean
+}
+
+enum QuestPriority {
+    LOW
+    NORMAL
+    HIGH
+    URGENT
+}
+
+class OrderedQuestIterator {
+    -snapshot: List<Quest>
+    -cursor: int
+    +hasNext(): boolean
+    +next(): Quest
+}
+
+class ReverseQuestIterator {
+    -snapshot: List<Quest>
+    -cursor: int
+    +hasNext(): boolean
+    +next(): Quest
+}
+
+class PriorityQuestIterator {
+    -snapshot: List<Quest>
+    -cursor: int
+    +hasNext(): boolean
+    +next(): Quest
+}
+
+class RewardSortedQuestIterator {
+    -snapshot: List<Quest>
+    -cursor: int
+    +hasNext(): boolean
+    +next(): Quest
+}
+
+QuestLog "1" o-- "0..*" Quest : stores privately
+Quest --> QuestPriority
+
+QuestLog ..> QuestIterator : creates iterators
+QuestLog ..> OrderedQuestIterator
+QuestLog ..> ReverseQuestIterator
+QuestLog ..> PriorityQuestIterator
+QuestLog ..> RewardSortedQuestIterator
+
+OrderedQuestIterator ..|> QuestIterator
+ReverseQuestIterator ..|> QuestIterator
+PriorityQuestIterator ..|> QuestIterator
+RewardSortedQuestIterator ..|> QuestIterator
+
+OrderedQuestIterator ..> QuestLog : uses snapshot()
+ReverseQuestIterator ..> QuestLog : uses snapshot()
+PriorityQuestIterator ..> QuestLog : uses snapshot()
+RewardSortedQuestIterator ..> QuestLog : uses snapshot()
+
+@enduml
