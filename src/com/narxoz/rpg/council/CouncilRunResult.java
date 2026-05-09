@@ -1,8 +1,6 @@
 package com.narxoz.rpg.council;
 
-/**
- * Summary of a guild war council planning run.
- */
+
 public class CouncilRunResult {
 
     private final int questsTraversed;
