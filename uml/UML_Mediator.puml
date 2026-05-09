@@ -1,0 +1,89 @@
+@startuml
+title Mediator Pattern - Homework 10
+
+interface GuildMediator {
+    +register(member: GuildMember): void
+    +dispatch(topic: String, from: GuildMember, payload: String): void
+}
+
+class GuildHall {
+    -membersByTopic: Map<String, List<GuildMember>>
+    -lastDispatchCount: int
+    +register(member: GuildMember): void
+    +dispatch(topic: String, from: GuildMember, payload: String): void
+    +getLastDispatchCount(): int
+    #addSubscriber(topic: String, member: GuildMember): void
+    #subscribersFor(topic: String): List<GuildMember>
+}
+
+abstract class GuildMember {
+    -name: String
+    -mediator: GuildMediator
+    #GuildMember(name: String, mediator: GuildMediator)
+    +getName(): String
+    #getMediator(): GuildMediator
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Captain {
+    +Captain(name: String, mediator: GuildMediator)
+    +issueOrder(topic: String, payload: String): void
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Quartermaster {
+    +Quartermaster(name: String, mediator: GuildMediator)
+    +requestSupplies(topic: String, payload: String): void
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Scout {
+    +Scout(name: String, mediator: GuildMediator)
+    +reportRoute(topic: String, payload: String): void
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Healer {
+    +Healer(name: String, mediator: GuildMediator)
+    +prepareAid(topic: String, payload: String): void
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Loremaster {
+    +Loremaster(name: String, mediator: GuildMediator)
+    +explainHistory(topic: String, payload: String): void
+    +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+GuildHall ..|> GuildMediator
+
+GuildMember --> GuildMediator : uses
+GuildHall o-- "0..*" GuildMember : topic subscribers
+
+Captain --|> GuildMember
+Quartermaster --|> GuildMember
+Scout --|> GuildMember
+Healer --|> GuildMember
+Loremaster --|> GuildMember
+
+Captain ..> GuildMediator : dispatch()
+Quartermaster ..> GuildMediator : dispatch()
+Scout ..> GuildMediator : dispatch()
+Healer ..> GuildMediator : dispatch()
+Loremaster ..> GuildMediator : dispatch()
+
+note right of GuildMember
+Concrete colleagues do not store
+direct references to each other.
+They communicate only through
+GuildMediator.dispatch().
+end note
+
+note bottom of GuildHall
+GuildHall routes messages by topic:
+orders, supplies, scouting,
+healing, urgent, rewards,
+lore, curse, history.
+end note
+
+@enduml
